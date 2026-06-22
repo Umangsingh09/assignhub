@@ -11,8 +11,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Load environment variables from backend/.env
-load_dotenv(BASE_DIR.parent / '.env')
+# Load environment variables from backend/.env and override system variables
+load_dotenv(BASE_DIR.parent / '.env', override=True)
 
 SECRET_KEY = os.getenv(
     'DJANGO_SECRET_KEY',
@@ -69,10 +69,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+import sys
 import urllib.parse as urlparse
 
 db_url = os.getenv("DATABASE_URL")
-if db_url:
+db_name = os.getenv("DB_NAME") or os.getenv("POSTGRES_DB")
+is_testing = "test" in sys.argv
+
+if is_testing:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+elif db_url:
     url = urlparse.urlparse(db_url)
     DATABASES = {
         "default": {
@@ -82,17 +93,23 @@ if db_url:
             "PASSWORD": url.password,
             "HOST": url.hostname,
             "PORT": url.port or 5432,
+            "OPTIONS": {
+                "sslmode": "require",
+            },
         }
     }
-elif os.getenv("POSTGRES_DB"):
+elif db_name:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER", "postgres"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
-            "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-            "PORT": os.getenv("POSTGRES_PORT", "5432"),
+            "NAME": db_name,
+            "USER": os.getenv("DB_USER") or os.getenv("POSTGRES_USER", "postgres"),
+            "PASSWORD": os.getenv("DB_PASSWORD") or os.getenv("POSTGRES_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST") or os.getenv("POSTGRES_HOST", "localhost"),
+            "PORT": os.getenv("DB_PORT") or os.getenv("POSTGRES_PORT", "5432"),
+            "OPTIONS": {
+                "sslmode": "require",
+            },
         }
     }
 else:

@@ -106,3 +106,71 @@ class AssignmentTests(APITestCase):
         response = self.client.delete(update_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Assignment.objects.count(), 1)
+
+
+from unittest.mock import patch
+from django.test import TestCase
+from services.supabase_storage import SupabaseStorageService
+
+class SupabaseStorageServiceTests(TestCase):
+
+    @patch("services.supabase_storage.requests.post")
+    def test_upload_file_success(self, mock_post):
+        # Configure mock response
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.text = "Success"
+
+        # Set environment variables for testing
+        with patch.dict(
+            "os.environ",
+            {
+                "SUPABASE_URL": "https://testproject.supabase.co/rest/v1/",
+                "SUPABASE_KEY": "testkey",
+            },
+        ):
+            # Test direct file upload
+            url = SupabaseStorageService.upload_file(
+                "assignments", b"file content", "test.pdf"
+            )
+            self.assertEqual(
+                url,
+                "https://testproject.supabase.co/storage/v1/object/public/assignments/test.pdf",
+            )
+
+            # Verify mock_post call details
+            mock_post.assert_called_once_with(
+                "https://testproject.supabase.co/storage/v1/object/assignments/test.pdf",
+                headers={
+                    "Authorization": "Bearer testkey",
+                    "ApiKey": "testkey",
+                    "Content-Type": "application/pdf",
+                },
+                data=b"file content",
+            )
+
+    @patch("services.supabase_storage.requests.post")
+    def test_upload_helpers(self, mock_post):
+        mock_post.return_value.status_code = 200
+        with patch.dict(
+            "os.environ",
+            {
+                "SUPABASE_URL": "https://testproject.supabase.co/rest/v1/",
+                "SUPABASE_KEY": "testkey",
+            },
+        ):
+            url_pdf = SupabaseStorageService.upload_assignment_pdf(
+                b"pdf data", "assignment1.pdf"
+            )
+            self.assertEqual(
+                url_pdf,
+                "https://testproject.supabase.co/storage/v1/object/public/assignments/assignment1.pdf",
+            )
+
+            url_sub = SupabaseStorageService.upload_submission_file(
+                b"sub data", "sub1.zip"
+            )
+            self.assertEqual(
+                url_sub,
+                "https://testproject.supabase.co/storage/v1/object/public/submissions/sub1.zip",
+            )
+
