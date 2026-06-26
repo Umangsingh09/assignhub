@@ -1,137 +1,283 @@
-# AssignHub Backend
+# 📚 AssignHub
 
-AssignHub is a robust, production-grade learning management backend built using Django, Django REST Framework (DRF), and PostgreSQL/Supabase. It features an automated student registration and approval system, role-based access control, assignment tracking, student submissions with late detection, dashboard analytics, and Supabase cloud storage integration.
+> A secure, role-based assignment management platform built for educational institutions, coaching centers, and hiring assessments.
 
----
-
-## Technical Stack
-
-- **Core Framework**: Django 6.0 & Django REST Framework (DRF)
-- **Database**: PostgreSQL (configured for Supabase in production/Docker, SQLite in local development fallback)
-- **Authentication**: JWT authentication using SimpleJWT
-- **Cloud Storage**: Supabase Storage REST API Integration (via `requests`)
-- **DevOps**: Docker, Docker Compose, GitHub Actions CI Pipeline
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
+![Django](https://img.shields.io/badge/Django-4.2-green)
+![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-success)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
-## Quick Setup Guide
+## 🚀 Overview
 
-### Local Development
+AssignHub is a modern assignment management system that provides **admin-controlled access** to assignments.
 
-1. **Clone and navigate to the backend directory**:
-   ```bash
-   cd backend
-   ```
+Unlike traditional LMS platforms, students **cannot access assignments immediately after registration**. Every student must first be approved by the administrator before accessing the platform.
 
-2. **Set up Virtual Environment**:
-   ```bash
-   python -m venv venv
-   # On Windows:
-   .\venv\Scripts\activate
-   # On Linux/macOS:
-   source venv/bin/activate
-   ```
+This makes AssignHub ideal for:
 
-3. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up Environment Variables**:
-   Create a `.env` file in the `backend/` directory by copying `.env.example`:
-   ```bash
-   cp .env.example .env
-   ```
-   Fill in the `SUPABASE_URL` and `SUPABASE_KEY` (service role key) and PostgreSQL credentials as necessary.
-
-5. **Run Migrations & Start Development Server**:
-   ```bash
-   python manage.py migrate
-   python manage.py runserver
-   ```
-   The backend will be available at `http://127.0.0.1:8000/`.
-
-6. **Create a Superuser (Admin)**:
-   ```bash
-   python manage.py createsuperuser
-   ```
+- 🏫 Colleges
+- 📖 Coaching Institutes
+- 👨‍🏫 Private Tutors
+- 💼 Hiring & Assessment Platforms
 
 ---
 
-## Docker Deployment
+# ✨ Features
 
-You can spin up the application along with a PostgreSQL database locally using Docker Compose.
+## 👨‍💼 Admin
 
-From the workspace root:
-```bash
-# Build and start services
-docker-compose up --build -d
+- Secure JWT Login
+- Student Approval/Rejection
+- Upload Assignments
+- PDF/File Support
+- Assignment Deadlines
+- View Student Submissions
+- Dashboard Analytics
+- Completion Tracking
+- Late Submission Tracking
 
-# Check logs
-docker-compose logs -f web
+---
 
-# Run migrations inside the docker container (runs automatically, but can run manually)
-docker-compose exec web python manage.py migrate
+## 👨‍🎓 Student
 
-# Create a superuser inside the docker container
-docker-compose exec web python manage.py createsuperuser
+- Register Account
+- Wait for Admin Approval
+- Secure Login
+- View Assignments
+- Download Assignment PDFs
+- Upload Assignment Submission
+- Submission History
+
+---
+
+## 🔒 Security
+
+- JWT Authentication
+- Role-Based Access Control (RBAC)
+- Protected APIs
+- Secure Password Storage
+- Supabase PostgreSQL
+- Supabase Storage Integration
+
+---
+
+# 🛠 Tech Stack
+
+### Frontend
+
+- Flutter
+- Riverpod
+- Dio
+- Go Router
+- Flutter Secure Storage
+
+### Backend
+
+- Django
+- Django REST Framework
+- Simple JWT
+- PostgreSQL
+- Supabase Storage
+
+### Database
+
+- Supabase PostgreSQL
+
+### Storage
+
+- Supabase Storage
+
+---
+
+# 📂 Project Structure
+
+```
+assignhub/
+
+│
+├── backend/
+│   ├── accounts/
+│   ├── assignments/
+│   ├── submissions/
+│   ├── config/
+│   └── services/
+│
+├── frontend_flutter/
+│
+├── README.md
+└── docker-compose.yml
 ```
 
 ---
 
-## API Documentation
+# ⚙️ Installation
 
-### Authentication & Profiles
+## Clone Repository
 
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/accounts/register/` | Register as a student (starts as unapproved) | Public |
-| `POST` | `/api/accounts/login/` | Obtain JWT Access and Refresh Tokens | Public |
-| `POST` | `/api/accounts/token/refresh/` | Refresh expired JWT Access Token | Public |
-| `GET` | `/api/accounts/students/pending/` | List all unapproved student accounts | Admin Only |
-| `POST` | `/api/accounts/students/<id>/approve/` | Approve student account (activates student) | Admin Only |
-| `POST` | `/api/accounts/students/<id>/reject/` | Reject student account (deactivates student) | Admin Only |
-
-### Assignments Management
-
-*Note: Unapproved student accounts are completely blocked from accessing these endpoints.*
-
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/assignments/` | List all assignments | Approved Student & Admin |
-| `POST` | `/api/assignments/` | Create a new assignment | Admin Only |
-| `GET` | `/api/assignments/<id>/` | Retrieve assignment details | Approved Student & Admin |
-| `PUT`/`PATCH` | `/api/assignments/<id>/` | Modify assignment details | Admin Only |
-| `DELETE` | `/api/assignments/<id>/` | Delete an assignment | Admin Only |
-
-### Submissions Management
-
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/submissions/` | Submit assignment (checks deadlines & duplication) | Approved Student Only |
-| `GET` | `/api/submissions/` | List submissions (Student sees own, Admin sees all) | Approved Student & Admin |
-| `GET` | `/api/submissions/pending/` | View pending (ungraded) submissions | Approved Student & Admin |
-
-### Dashboard Analytics
-
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/dashboard/analytics/` | View metrics (student count, approvals, late subs, completion rate) | Admin Only |
-
----
-
-## Postman Integration
-
-A Postman collection is supplied in the project root: `AssignHub.postman_collection.json`.
-1. Open Postman.
-2. Click **Import** and select the file.
-3. Configure the environment variables (`base_url`, `token`, `refresh_token`). Logins will automatically save access tokens to the environment context.
-
----
-
-## Running Tests
-
-Verify code changes using Django's built-in testing commands:
 ```bash
-python manage.py test
+git clone https://github.com/Umangsingh09/assignhub.git
 ```
+
+```
+cd assignhub
+```
+
+---
+
+## Backend Setup
+
+```
+cd backend
+```
+
+Create Virtual Environment
+
+```
+python -m venv venv
+```
+
+Activate
+
+Windows
+
+```
+venv\Scripts\activate
+```
+
+Install Dependencies
+
+```
+pip install -r requirements.txt
+```
+
+Run Migrations
+
+```
+python manage.py migrate
+```
+
+Start Server
+
+```
+python manage.py runserver
+```
+
+---
+
+## Flutter Frontend
+
+```
+cd frontend_flutter
+```
+
+Install Packages
+
+```
+flutter pub get
+```
+
+Run
+
+```
+flutter run
+```
+
+---
+
+# 🔑 Environment Variables
+
+Create a `.env` file inside the backend folder.
+
+Example:
+
+```
+SECRET_KEY=your_secret_key
+
+DEBUG=True
+
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_HOST=your_host
+DB_PORT=5432
+
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_key
+```
+
+---
+
+# 📊 Core Workflow
+
+```
+Student Register
+        │
+        ▼
+Pending Approval
+        │
+        ▼
+Admin Approves
+        │
+        ▼
+Student Login
+        │
+        ▼
+View Assignments
+        │
+        ▼
+Submit Assignment
+        │
+        ▼
+Admin Reviews Submission
+```
+
+---
+
+# 📸 Screens
+
+- Login
+- Register
+- Pending Approval
+- Admin Dashboard
+- Student Dashboard
+- Assignment Upload
+- Assignment Submission
+- Analytics Dashboard
+
+---
+
+# 🚀 Future Improvements
+
+- Push Notifications
+- Email Notifications
+- AI Assignment Evaluation
+- Plagiarism Detection
+- Calendar Integration
+- Real-time Chat
+- Dark/Light Themes
+- Attendance Module
+
+---
+
+# 👥 Team
+
+**Umang Raj**  Backend Developer • Project Lead
+**Hariom Singh** backend
+**Aditya Kumar** database
+**Raja Kumar**   frontend
+
+
+
+---
+
+# 🏆 Hackathon Project
+
+Built for **DevFusion 3.0 - Developers Hackathon**
+
+---
+
+# 📄 License
+
+This project is released under the MIT License.
