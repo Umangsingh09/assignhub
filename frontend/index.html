@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssignHub - Premium Learning Management Client</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- App Navigation Header -->
+    <header id="nav-bar" class="d-none">
+        <nav class="nav-container">
+            <div class="logo" onclick="window.location.hash = ''">AssignHub</div>
+            <div class="nav-links">
+                <a id="nav-student-dash" class="nav-link student-nav d-none" href="#student-dashboard">Dashboard</a>
+                <a id="nav-admin-dash" class="nav-link admin-nav d-none" href="#admin-dashboard">Admin Portal</a>
+                <div id="nav-user-info" class="nav-user">
+                    <!-- Dynamic User Profile Info -->
+                </div>
+                <button id="nav-logout" class="btn btn-secondary btn-sm" style="padding: 0.45rem 1rem;">Sign Out</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+
+        <!-- 1. LOGIN VIEW -->
+        <section id="view-login" class="app-view auth-container d-none">
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Enter your credentials to access your dashboard</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-username">Username</label>
+                    <input class="form-input" type="text" id="login-username" name="username" placeholder="e.g. johndoe" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input class="form-input" type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 1rem;">Sign In</button>
+            </form>
+            <div class="text-secondary" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                Don't have a student account? <a href="#register" class="meta-link">Register here</a>
+            </div>
+        </section>
+
+        <!-- 2. REGISTER VIEW -->
+        <section id="view-register" class="app-view auth-container d-none" style="max-width: 500px;">
+            <div class="auth-header">
+                <h1>Create Account</h1>
+                <p>Register as a student. Admin approval is required.</p>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="reg-username">Username</label>
+                    <input class="form-input" type="text" id="reg-username" name="username" placeholder="e.g. johndoe" required>
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label class="form-label" for="reg-first">First Name</label>
+                        <input class="form-input" type="text" id="reg-first" name="first_name" placeholder="John" required>
+                    </div>
+                    <div>
+                        <label class="form-label" for="reg-last">Last Name</label>
+                        <input class="form-input" type="text" id="reg-last" name="last_name" placeholder="Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-email">Email Address</label>
+                    <input class="form-input" type="email" id="reg-email" name="email" placeholder="johndoe@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-roll">Roll Number</label>
+                    <input class="form-input" type="text" id="reg-roll" name="roll_number" placeholder="CS2026_042" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-password">Password</label>
+                    <input class="form-input" type="password" id="reg-password" name="password" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-confirm">Confirm Password</label>
+                    <input class="form-input" type="password" id="reg-confirm" name="password2" placeholder="••••••••" required>
+                </div>
+                <button class="btn btn-primary" type="submit" style="width: 100%; margin-top: 1rem;">Register</button>
+            </form>
+            <div class="text-secondary" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+                Already have an account? <a href="#login" class="meta-link">Sign in here</a>
+            </div>
+        </section>
+
+        <!-- 3. PENDING APPROVAL VIEW -->
+        <section id="view-pending" class="app-view pending-container d-none">
+            <span class="pending-icon">⏳</span>
+            <h1 class="pending-title">Approval Pending</h1>
+            <p class="pending-desc">
+                Your student account registered successfully. Please wait for an administrator to approve your access. You will have full access to assignments and submissions once approved.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button id="btn-refresh-status" class="btn btn-primary">Refresh Status</button>
+            </div>
+        </section>
+
+        <!-- 4. STUDENT DASHBOARD VIEW -->
+        <section id="view-student-dashboard" class="app-view d-none">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Student Dashboard</h1>
+            </div>
+            
+            <div class="section-grid">
+                <!-- Left Column: Assignments -->
+                <div>
+                    <div class="panel-card">
+                        <h2 class="panel-title">Active Assignments</h2>
+                        <div id="student-assignments-list" class="assignments-grid">
+                            <!-- Dynamic Assignments List -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column: Submissions History -->
+                <div>
+                    <div class="panel-card">
+                        <h2 class="panel-title">My Submissions</h2>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Assignment</th>
+                                        <th>Submitted</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-submissions-tbody">
+                                    <!-- Dynamic Submission Logs -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. ADMIN DASHBOARD VIEW -->
+        <section id="view-admin-dashboard" class="app-view d-none">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Administrative Portal</h1>
+            </div>
+
+            <!-- Metrics widgets row -->
+            <div class="analytics-grid">
+                <div class="metric-card">
+                    <div class="metric-title">Total Students</div>
+                    <div id="metric-students" class="metric-value">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Pending Approvals</div>
+                    <div id="metric-pending" class="metric-value">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Assignments</div>
+                    <div id="metric-assignments" class="metric-value">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Total Submissions</div>
+                    <div id="metric-submissions" class="metric-value">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Completion Rate</div>
+                    <div id="metric-completion" class="metric-value">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Late Submissions</div>
+                    <div id="metric-late" class="metric-value">-</div>
+                </div>
+            </div>
+
+            <div class="section-grid">
+                <!-- Left column: Student Approvals & Assignments CRUD -->
+                <div>
+                    <!-- Student Approvals -->
+                    <div class="panel-card">
+                        <h2 class="panel-title">Pending Student Approvals</h2>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Roll Number</th>
+                                        <th>Email</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-pending-tbody">
+                                    <!-- Dynamic student approval rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Assignments Management -->
+                    <div class="panel-card">
+                        <div class="panel-title">
+                            <span>Manage Assignments</span>
+                            <button class="btn btn-primary btn-sm" onclick="openCreateAssignmentModal()">+ Create New</button>
+                        </div>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Assignment Title</th>
+                                        <th>Deadline</th>
+                                        <th>Resources</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-assignments-tbody">
+                                    <!-- Dynamic admin assignments rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column: Global Submissions -->
+                <div>
+                    <div class="panel-card" style="height: 100%;">
+                        <h2 class="panel-title">Student Submissions Log</h2>
+                        <div class="data-table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Assignment</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-submissions-tbody">
+                                    <!-- Dynamic submissions log rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ------------------------------------------------------------- -->
+    <!-- MODAL: Student Submit Assignment -->
+    <!-- ------------------------------------------------------------- -->
+    <div id="modal-submit" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title">Submit Solution</h2>
+            <h4 style="margin-top: -1rem; margin-bottom: 1.5rem; color: var(--primary-color);" id="submit-assignment-title">-</h4>
+            
+            <form id="form-submit-solution">
+                <div class="form-group">
+                    <label class="form-label" for="sub-text">Write Text Response (Optional)</label>
+                    <textarea class="form-input" id="sub-text" name="text_submission" rows="4" placeholder="Type comments or code link here..." style="resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload Solution File (Optional)</label>
+                    <div class="file-upload-wrapper">
+                        <input class="file-upload-input" type="file" name="submission_file" id="sub-file">
+                        <div class="file-upload-text">
+                            Drag & drop or <strong>browse file</strong>
+                        </div>
+                        <div class="file-selected-name d-none"></div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-secondary btn-modal-cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Submit Solution</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ------------------------------------------------------------- -->
+    <!-- MODAL: Admin Create/Edit Assignment -->
+    <!-- ------------------------------------------------------------- -->
+    <div id="modal-assignment" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h2 class="modal-title" id="modal-assign-title">Create Assignment</h2>
+            
+            <form id="form-assignment">
+                <div class="form-group">
+                    <label class="form-label" for="assign-title">Title</label>
+                    <input class="form-input" type="text" id="assign-title" name="title" placeholder="e.g. Python Basics" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="assign-desc">Description</label>
+                    <textarea class="form-input" id="assign-desc" name="description" rows="4" placeholder="Briefly describe instructions..." required style="resize: vertical;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="assign-external">External Documentation Link (Optional)</label>
+                    <input class="form-input" type="url" id="assign-external" name="external_link" placeholder="https://example.com/docs">
+                </div>
+
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                    <div>
+                        <label class="form-label" for="assign-deadline">Submission Deadline</label>
+                        <input class="form-input" type="datetime-local" id="assign-deadline" name="deadline" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload Assignment PDF (Optional)</label>
+                    <div class="file-upload-wrapper">
+                        <input class="file-upload-input" type="file" name="assignment_file" id="assign-file" accept="application/pdf">
+                        <div class="file-upload-text">
+                            Drag & drop PDF or <strong>browse file</strong>
+                        </div>
+                        <div class="file-selected-name d-none"></div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-secondary btn-modal-cancel" type="button">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

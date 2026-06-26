@@ -8,15 +8,15 @@ This report outlines the verification results of AssignHub core endpoints agains
 
 | Endpoint URL | HTTP Method | Expected Status | Result Status | Verification Details |
 | :--- | :--- | :--- | :--- | :--- |
-| `/api/accounts/register/` | **POST** | `200/201/204` | **PASS** | Created unapproved student 'test_student_635016'. |
+| `/api/accounts/register/` | **POST** | `200/201/204` | **PASS** | Created unapproved student 'test_student_o84ay8'. |
 | `/api/accounts/students/pending/` | **GET** | `200/201/204` | **PASS** | Retrieved pending list. Count: 6 |
-| `/api/accounts/students/<id>/approve/` | **POST** | `200/201/204` | **PASS** | Approved student 'test_student_635016' (is_approved=True). |
-| `/api/accounts/students/<id>/reject/` | **POST** | `200/201/204` | **PASS** | Rejected student 'test_student_635016' (is_approved=False, is_active=False). |
-| `/api/assignments/` | **POST** | `200/201/204` | **PASS** | Created assignment 'Temp Verification Assignment' with ID 12. |
-| `/api/assignments/<id>/` | **GET** | `200/201/204` | **PASS** | Retrieved assignment detail for ID 12. |
+| `/api/accounts/students/<id>/approve/` | **POST** | `200/201/204` | **PASS** | Approved student 'test_student_o84ay8' (is_approved=True). |
+| `/api/accounts/students/<id>/reject/` | **POST** | `200/201/204` | **PASS** | Rejected student 'test_student_o84ay8' (is_approved=False, is_active=False). |
+| `/api/assignments/` | **POST** | `200/201/204` | **PASS** | Created assignment 'Temp Verification Assignment' with ID 14. |
+| `/api/assignments/<id>/` | **GET** | `200/201/204` | **PASS** | Retrieved assignment detail for ID 14. |
 | `/api/assignments/<id>/` | **PATCH** | `200/201/204` | **PASS** | Updated assignment title to 'Updated Verification Assignment'. |
-| `/api/assignments/<id>/` | **DELETE** | `200/201/204` | **PASS** | Deleted temporary assignment with ID 12. |
-| `/api/submissions/` | **POST** | `200/201/204` | **PASS** | Submitted assignment 'Supabase Storage Integration' (ID: 5) under submission ID 21. |
+| `/api/assignments/<id>/` | **DELETE** | `200/201/204` | **PASS** | Deleted temporary assignment with ID 14. |
+| `/api/submissions/` | **POST** | `200/201/204` | **PASS** | Submitted assignment 'Supabase Storage Integration' (ID: 5) under submission ID 23. |
 | `/api/submissions/` | **GET** | `200/201/204` | **PASS** | Retrieved student's own submissions. Count: 5 |
 | `/api/submissions/pending/` | **GET** | `200/201/204` | **PASS** | Retrieved pending submissions. Count: 2 |
 | `/api/dashboard/analytics/` | **GET** | `200/201/204` | **PASS** | Data: {'total_students': 10, 'pending_approvals': 5, 'total_assignments': 10, 'total_submissions': 20, 'completion_percentage': 40.0, 'late_submissions': 14} |
